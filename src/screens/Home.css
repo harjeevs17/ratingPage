@@ -1,3 +1,20 @@
 .modalBox {
   background-color: white;
 }
+
+@media only screen and (max-width: 480px) {
+  .responsiveImg {
+    height: 130px;
+  }
+}
+@media screen and (max-width: 720px) and (min-width: 481px) {
+  .responsiveImg {
+    height: 150px;
+  }
+}
+
+@media screen and (max-width: 1024px) and (min-width: 720px) {
+  .responsiveImg {
+    height: 200px;
+  }
+}
