@@ -7,12 +7,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import emailjs from "emailjs-com";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import FacebookIcon from "@material-ui/icons/Facebook";
 import { FaGoogle, FaFacebook, FaShareAlt } from "react-icons/fa";
 import Snackbar from "@material-ui/core/Snackbar";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
+import { fetchCompany } from "../apis/index";
 
 import {
   FacebookShareButton,
@@ -69,10 +70,11 @@ const Main = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [pop, setPop] = useState(false);
+  const [data, setdata] = useState(null);
   const [open, setOpen] = useState(false);
   const [btn, setbtn] = useState("Send Message");
   const classes = useStyles();
-
+  const params = useParams();
   useEffect(() => {
     if (value != null) {
       console.log(value);
@@ -83,9 +85,16 @@ const Main = () => {
       }
     }
   }, [value]);
+  useEffect(() => {
+    const FetchDetails = async () => {
+      setdata(await fetchCompany(params.name));
+    };
+    FetchDetails();
+  }, []);
   const closeModal = () => {
     setOpen(false);
   };
+  console.log("data", data);
   const submitData = () => {
     console.log(name);
     // setPop(true);
@@ -122,132 +131,153 @@ const Main = () => {
 
   return (
     <div className={classes.mainBox}>
-      <div>
-        <p style={{ margin: 20 }}>
-          Help us. Help others. You’re invited to review:
-        </p>
-        <h1 style={{ padding: 10, fontSize: 50, color: "#1b75bb" }}>
-          <img
-            className="responsiveImg"
-            src={require("../assets/logo.jpg")}
-            alt="Logo"
-          />
-        </h1>
-        <Typography
-          className={classes.intro}
-          style={{ padding: 20, color: "#1b75bb" }}
-        >
-          Please take a moment to review your experience with us. Your feedback
-          not only helps us, it helps other potential customers.
-        </Typography>
-      </div>
-      <div className="stars">
-        <Rating
-          style={{ fontSize: 70, paddingTop: 20 }}
-          name="simple-controlled"
-          onChange={(event, newValue) => {
-            setValue(newValue);
-          }}
-        />
-      </div>
-      <Modal
-        open={open}
-        className={classes.modal}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-        <div className={classes.paper}>
-          <Button
-            variant="contained"
-            onClick={closeModal}
-            style={{ float: "right" }}
+      {data ? (
+        <>
+          <div>
+            <p style={{ margin: 20 }}>
+              Help us. Help others. You’re invited to review:
+            </p>
+            <h1 style={{ padding: 10, fontSize: 50, color: "#1b75bb" }}>
+              <img className="responsiveImg" src={data.Logo} alt="Logo" />
+            </h1>
+            <Typography
+              className={classes.intro}
+              style={{ padding: 20, color: "#1b75bb" }}
+            >
+              Please take a moment to review your experience with us. Your
+              feedback not only helps us, it helps other potential customers.
+            </Typography>
+          </div>
+          <div className="stars">
+            <Rating
+              style={{ fontSize: 70, paddingTop: 20 }}
+              name="simple-controlled"
+              onChange={(event, newValue) => {
+                setValue(newValue);
+              }}
+            />
+          </div>
+          <Modal
+            open={open}
+            className={classes.modal}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
           >
-            X
-          </Button>
-          {value < 4 ? (
-            <>
-              <h2 id="simple-modal-title">Give us your review</h2>
-              <div className={classes.root} noValidate autoComplete="off">
-                <div>
-                  <p>
-                    We strive for 100% customer satisfaction. If we fell short,
-                    please tell us more so we can address your concerns.
-                  </p>
-                </div>
+            <div className={classes.paper}>
+              <Button
+                variant="contained"
+                onClick={closeModal}
+                style={{ float: "right" }}
+              >
+                X
+              </Button>
+              {value < 4 ? (
+                <>
+                  <h2 id="simple-modal-title">Give us your review</h2>
+                  <div className={classes.root} noValidate autoComplete="off">
+                    <div>
+                      <p>
+                        We strive for 100% customer satisfaction. If we fell
+                        short, please tell us more so we can address your
+                        concerns.
+                      </p>
+                    </div>
 
-                <form noValidate autoComplete="off">
-                  <TextField
-                    fullWidth
-                    id="standard-basic"
-                    label="Name"
-                    onChange={(event, newValue) => {
-                      setName(event.target.value);
-                    }}
-                  />
-                  <TextField
-                    fullWidth
-                    id="standard-basic"
-                    label="Phone"
-                    onChange={(event, newValue) => {
-                      setPhone(event.target.value);
-                    }}
-                  />
-                  <TextField
-                    fullWidth
-                    id="standard-basic"
-                    label="Email"
-                    onChange={(event, newValue) => {
-                      setEmail(event.target.value);
-                    }}
-                  />
-                  <TextField
-                    fullWidth
-                    onChange={(event, newValue) => {
-                      setMessage(event.target.value);
-                    }}
-                    id="outlined-multiline-static"
-                    label="Message"
-                    multiline
-                    rows={4}
-                  />
-                  <Button variant="contained" onClick={submitData}>
-                    {btn}
-                  </Button>
-                </form>
-              </div>
-            </>
-          ) : (
-            <>
-              <h2 id="simple-modal-title">Share the word</h2>
-              <div className={classes.root}>
-                <div>
-                  <p>
-                    Thank you! We need your help. Would you share your
-                    experience on one of these sites?
-                  </p>
-                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <form noValidate autoComplete="off">
+                      <TextField
+                        fullWidth
+                        id="standard-basic"
+                        label="Name"
+                        onChange={(event, newValue) => {
+                          setName(event.target.value);
+                        }}
+                      />
+                      <TextField
+                        fullWidth
+                        id="standard-basic"
+                        label="Phone"
+                        onChange={(event, newValue) => {
+                          setPhone(event.target.value);
+                        }}
+                      />
+                      <TextField
+                        fullWidth
+                        id="standard-basic"
+                        label="Email"
+                        onChange={(event, newValue) => {
+                          setEmail(event.target.value);
+                        }}
+                      />
+                      <TextField
+                        fullWidth
+                        onChange={(event, newValue) => {
+                          setMessage(event.target.value);
+                        }}
+                        id="outlined-multiline-static"
+                        label="Message"
+                        multiline
+                        rows={4}
+                      />
+                      <Button variant="contained" onClick={submitData}>
+                        {btn}
+                      </Button>
+                    </form>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h2 id="simple-modal-title">Share the word</h2>
+                  <div className={classes.root}>
                     <div>
-                      <a href="https://www.facebook.com/pg/hhsolarpower/reviews/?ref=page_internal">
-                        <FaFacebook fontSize="35px" style={{ padding: 10 }} />
-                      </a>
-                    </div>
-                    <div>
-                      <a href="https://www.google.com/search?q=hilton+head+solar&rlz=1CAOTWH_enUS879&oq=hilton+head+solar&aqs=chrome.0.69i59j46j0l3j69i61j69i60l2.1961j0j7&sourceid=chrome&ie=UTF-8#lrd=0x88fbf35b9699e481:0xe6a3b9ff1a25b1b5,3">
-                        <FaGoogle fontSize="35px" style={{ padding: 10 }} />
-                      </a>
-                    </div>
-                    <div>
-                      <a href="https://www.solarreviews.com/installers/hilton-head-solar-reviews">
-                        <FaShareAlt fontSize="35px" style={{ padding: 10 }} />
-                      </a>
+                      <p>
+                        Thank you! We need your help. Would you share your
+                        experience on one of these sites?
+                      </p>
+                      <div style={{ display: "flex", flexDirection: "row" }}>
+                        <a target="_blank" href={data.GoogleLink}>
+                          <div
+                            style={{
+                              height: "50px",
+                              backgroundRepeat: "no-repeat",
+                              backgroundSize: "100px 40px",
+                              width: "100px",
+                              backgroundImage: `url(${require("../assets/google.png")})`,
+                            }}
+                          ></div>
+                        </a>
+                        <a target="_blank" href={data.FbLink}>
+                          <div
+                            style={{
+                              height: "50px",
+                              backgroundRepeat: "no-repeat",
+                              backgroundSize: "100px 40px",
+                              width: "100px",
+                              backgroundImage: `url(${require("../assets/facebook.png")})`,
+                            }}
+                          ></div>
+                        </a>
+                        <a target="_blank" href={data.CompanyLink}>
+                          <div
+                            style={{
+                              height: "50px",
+                              backgroundRepeat: "no-repeat",
+                              backgroundSize: "100px 40px",
+                              width: "100px",
+                              backgroundImage: `url(${require("../assets/solor.jpg")})`,
+                            }}
+                          ></div>
+                        </a>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-      </Modal>
+                </>
+              )}
+            </div>
+          </Modal>
+        </>
+      ) : (
+        <h2>Loading</h2>
+      )}
       <Snackbar
         anchorOrigin={{
           vertical: "top",
@@ -263,13 +293,3 @@ const Main = () => {
 };
 
 export default Main;
-/* <div className={classes.icons}>
-                      <FacebookShareButton url="facebook.com" quote="hihihi">
-                        <FacebookIcon size={32} round />
-                      </FacebookShareButton>
-                    </div>
-                    <div className={classes.icons}>
-                      <FacebookShareButton url="facebook.com" quote="hihihi">
-                        <FacebookIcon size={32} round />
-                      </FacebookShareButton>
-                    </div>*/
