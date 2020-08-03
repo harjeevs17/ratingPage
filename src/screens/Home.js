@@ -128,13 +128,24 @@ const Main = () => {
         }
       );
   };
-
+  let styleStars;
+  let upperText;
+  if (window.innerWidth > 320) {
+    styleStars = { fontSize: 60, paddingTop: 20 };
+  } else {
+    styleStars = { fontSize: 40, paddingTop: 20 };
+  }
+  if (window.innerWidth > 600) {
+    upperText = { margin: 20 };
+  } else {
+    upperText = { margin: "100px 20px 20px 20px" };
+  }
   return (
     <div className={classes.mainBox}>
       {data ? (
         <>
           <div>
-            <p style={{ margin: 20 }}>
+            <p style={upperText}>
               Help us. Help others. You’re invited to review:
             </p>
             <h1 style={{ padding: 10, fontSize: 50, color: "#1b75bb" }}>
@@ -150,7 +161,7 @@ const Main = () => {
           </div>
           <div className="stars">
             <Rating
-              style={{ fontSize: 70, paddingTop: 20 }}
+              style={styleStars}
               name="simple-controlled"
               onChange={(event, newValue) => {
                 setValue(newValue);
