@@ -4,13 +4,15 @@ import Manage from "./screens/Manage";
 import "./App.css";
 import { BrowserRouter, Route } from "react-router-dom";
 
+import { HashRouter as Router } from "react-router-dom";
+
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Route exact path="/ratingPage" component={Manage} />
-        <Route exact path="/ratingPage/reviews/:name" component={Main} />
-      </BrowserRouter>
+      <Router>
+        <Route exact path="/" component={Manage} />
+        <Route exact path="/reviews/:name" component={Main} />
+      </Router>
     </div>
   );
 }
