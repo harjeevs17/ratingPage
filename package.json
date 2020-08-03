@@ -19,9 +19,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-share": "^4.2.1",
-    "react-sharingbuttons": "^1.0.0",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12"
+    "react-sharingbuttons": "^1.0.0"
   },
   "scripts": {
     "predeploy": "npm run build",

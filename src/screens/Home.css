@@ -4,17 +4,20 @@
 
 @media only screen and (max-width: 480px) {
   .responsiveImg {
-    height: 130px;
+    height: 130px !important;
   }
 }
 @media screen and (max-width: 720px) and (min-width: 481px) {
   .responsiveImg {
-    height: 150px;
+    height: 150px !important;
   }
 }
 
 @media screen and (max-width: 1024px) and (min-width: 720px) {
   .responsiveImg {
-    height: 200px;
+    height: 200px !important;
   }
+}
+.responsiveImg {
+  max-height: 200px;
 }
